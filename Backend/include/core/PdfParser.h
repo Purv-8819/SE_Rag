@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <utf8proc.h>
 
 namespace core {
 
@@ -28,6 +29,9 @@ namespace core {
          * Convenience method to get the entire PDF content as a single blob of text.
          */
         [[nodiscard]] std::string parseToString(const std::string& filepath) const;
+
+    private:
+        static std::string normalize(const std::string& text) ;
     };
 
 }

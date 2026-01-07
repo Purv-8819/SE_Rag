@@ -9,10 +9,12 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(Drogon CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
+find_package(utf8proc CONFIG REQUIRED)
 
 # 2. Find Poppler (Using PkgConfig as per vcpkg logs)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(POPPLER_CPP REQUIRED IMPORTED_TARGET poppler-cpp)
+
 
 # 3. Include Directories
 include_directories(include)
@@ -31,6 +33,7 @@ target_link_libraries(core_lib PUBLIC
         PkgConfig::POPPLER_CPP
         fmt::fmt
         spdlog::spdlog
+        utf8proc::utf8proc
 )
 
 # 5. Executable A: The Ingestion CLI

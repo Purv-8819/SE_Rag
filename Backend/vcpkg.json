@@ -7,6 +7,7 @@
     "drogon",
     "poppler",
     "fmt",
-    "spdlog"
+    "spdlog",
+    "utf8proc"
   ]
 }

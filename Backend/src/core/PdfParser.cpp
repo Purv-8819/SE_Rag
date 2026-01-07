@@ -5,6 +5,9 @@
 #include "poppler-document.h"
 #include "poppler-page.h"
 #include <iostream>
+#include <utf8proc.h>
+
+
 // TODO: Implement PDF parsing logic
 std::string core::PdfParser::parseToString(const std::string &filepath) const {
 
@@ -24,7 +27,7 @@ std::string core::PdfParser::parseToString(const std::string &filepath) const {
     for (int i = 0; i<numPages; i++) {
         poppler::page * cur_page = doc->create_page(i);
 
-        result += cur_page->text().to_latin1();
+        result += normalize(cur_page->text().to_latin1());
     }
 
     return result;
@@ -47,10 +50,21 @@ std::vector<std::string> core::PdfParser::parsePages(const std::string &filepath
     for (int i = 0; i<numPages; i++) {
         poppler::page * cur_page = doc->create_page(i);
 
-        result.push_back(cur_page->text().to_latin1());
+        result.push_back(normalize(cur_page->text().to_latin1()));
     }
 
 
     return result;
 
+}
+
+std::string core::PdfParser::normalize(const std::string& text) {
+    utf8proc_uint8_t *result;
+    const auto opt = static_cast<utf8proc_option_t>(UTF8PROC_NULLTERM | UTF8PROC_STABLE | UTF8PROC_COMPOSE | UTF8PROC_COMPAT | UTF8PROC_CASEFOLD);
+
+    utf8proc_map((utf8proc_uint8_t*)text.c_str(), 0, &result, opt);
+
+    std::string output(reinterpret_cast<char *>(result));
+    free(result);
+    return output;
 }
