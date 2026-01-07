@@ -10,6 +10,7 @@ find_package(Drogon CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(utf8proc CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 # 2. Find Poppler (Using PkgConfig as per vcpkg logs)
 find_package(PkgConfig REQUIRED)
@@ -24,6 +25,7 @@ add_library(core_lib
         src/core/Neo4jClient.cpp
         src/core/OllamaClient.cpp
         src/core/PdfParser.cpp
+        tests/TestPdfParser.cpp
 )
 
 # Link libraries (Note: PkgConfig::POPPLER_CPP is the fix here)
@@ -43,3 +45,15 @@ target_link_libraries(ingest_tool PRIVATE core_lib)
 # 6. Executable B: The Web Server
 add_executable(web_server src/server/main.cpp)
 target_link_libraries(web_server PRIVATE core_lib Drogon::Drogon)
+
+enable_testing()
+add_executable(unit_tests
+        tests/TestPdfParser.cpp
+#        tests/TestChunker.cpp
+#        tests/TestOllama.cpp
+#        tests/TestNeo4j.cpp
+        src/core/PdfParser.cpp
+        src/core/OllamaClient.cpp
+)
+target_link_libraries(unit_tests PRIVATE GTest::gtest GTest::gtest_main core_lib)
+add_test(NAME CoreTests COMMAND unit_tests)
